@@ -79,6 +79,9 @@ public class HandleClient implements Runnable {
                 return  isRepresentativeActive(request.parameters);
             case GET_REPRESENTATIVE_INQUIRIES:
                 return  getAllInquiriesByRepresentative(request.parameters);
+            case     GET_ACTIVE_REPRESENTATIVES:
+                return  getActiveRepresentatives();
+
             default:
                 return new ResponseData(ResponseStatus.FAIL,"בקשה לא תקינה",null);
         }
@@ -308,6 +311,29 @@ public class HandleClient implements Runnable {
        }
     }
 
+
+    public ResponseData getActiveRepresentatives()
+    {
+        System.out.println("getActiveRepresentatives");
+        ResponseStatus status =ResponseStatus.FAIL;
+        Object result=null;
+        String message=null;
+
+        try {
+                result= InquiryManager.activeInquiriesMap.size();
+                status =ResponseStatus.SUCCESS;
+                message="getActiveRepresentatives";
+        }catch (Exception e){
+            e.printStackTrace();
+            message="שגיאת שרת";
+        }finally {
+            ResponseData responseData=new ResponseData(status,message,result);
+            return responseData;
+        }
+    }
+
+
+
     public static boolean isRepresentativeExists(int repId) {
         for (Representative rep : InquiryManager.representativeList) {
             if (rep.getId() == repId) return true;
@@ -326,6 +352,7 @@ public class HandleClient implements Runnable {
         }
         return false;
     }
+
     public static boolean isInquiryExists(int code,boolean searchInHistory) {
         for (Inquiry inq : InquiryManager.queue) {
             if (inq.getCode() == code) return true;
