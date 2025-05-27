@@ -106,6 +106,7 @@ public class HandleClient implements Runnable {
         Inquiry inquiry = (Inquiry) parameters.get(0);
         InquiryManager inquiryManager=new InquiryManager();
         ResponseStatus status = ResponseStatus.FAIL;
+        String message = "הפניה נוספה בהצלחה";
         int result=-1;
         try {
              result = inquiryManager.addInquiryFromClient(inquiry);
@@ -114,40 +115,54 @@ public class HandleClient implements Runnable {
         }
         catch (Exception exception){
             exception.printStackTrace();
+             message = "שגיאה בעת הוספת הפניה";
         }
-        ResponseData responseData=new ResponseData(status,"AddInquiry from server",result);
-
-        return responseData;
-    }
+        finally {
+            ResponseData responseData=new ResponseData(status,message,result);
+            return responseData;
+        }    }
 
     public ResponseData getAllInquiryes(List<Object> parameters){
         System.out.println("getAllInquiryes");
-        ResponseStatus status =ResponseStatus.SUCCESS;
-        InquiryManager inquiryManager=new InquiryManager();
-        Object result=inquiryManager.getQueue();
-        ResponseData responseData=new ResponseData(status,"getAllInquiryes from server",result);
-        return responseData;
+        ResponseStatus status =ResponseStatus.FAIL;
+        Object result=null;
+        String message=null;
+        try {
+            InquiryManager inquiryManager=new InquiryManager();
+            result=inquiryManager.getQueue();
+            status =ResponseStatus.SUCCESS;
+            message = "קבלת כל הפניות";
+        }
+        catch (Exception exception){
+            message = "שגיאה בעת קבלת הפניות";
+        }
+        finally {
+               ResponseData responseData=new ResponseData(status,message,result);
+               return responseData;
+        }
     }
 
     public ResponseData cancelInquiry(List<Object> parameters){
         System.out.println("cancelInquiry");
 
         int code = Integer.parseInt((String) parameters.get(0));
+
         if (!isInquiryExists(code,false))
         {
             return new ResponseData(ResponseStatus.FAIL, "לא נמצאה פנייה מתאימה ", null);
         }
         InquiryHandling inquiryHandling = new InquiryHandling();
         ResponseStatus status =ResponseStatus.FAIL;
-
+        String message = null;
         try {
             inquiryHandling.cancelInquiry(code);
             status =ResponseStatus.SUCCESS;
+            message = "הפניה נמחקה בהצלחה";
         }catch (Exception e){
             e.printStackTrace();
 
         }finally {
-            ResponseData responseData=new ResponseData(status,"cancelInquiry from server",null);
+            ResponseData responseData=new ResponseData(status,"שגיאה בעת מחיקת הפניה",null);
             return responseData;
         }
     }
@@ -162,14 +177,17 @@ public class HandleClient implements Runnable {
         InquiryHandling inquiryHandling = new InquiryHandling();
         ResponseStatus status =ResponseStatus.FAIL;
         InquiryStatus inquiryStatus = null;
+        String message = null;
         try {
              inquiryStatus= inquiryHandling.getInquiryStatusByCode(code);
              status =ResponseStatus.SUCCESS;
+             message="קבלת סטטוס פניה";
         }catch (Exception e){
+            ResponseData responseData=new ResponseData(status,"שגיאה בעת קבלת סטטוס הפניה",null);
             e.printStackTrace();
 
         }finally {
-            ResponseData responseData=new ResponseData(status,"getInquiryStatus from server", inquiryStatus);
+            ResponseData responseData=new ResponseData(status,message, inquiryStatus);
             return responseData;
         }
     }
