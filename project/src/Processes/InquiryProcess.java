@@ -36,8 +36,8 @@ public class InquiryProcess extends Thread {
                 handleFiles.saveFile(inquiry);
                 saveInMap(inquiry, representative);
                 System.out.println("הוקצה נציג " + representative.getName() + " לפנייה #" + inquiry.getCode());
-                InquiryHandlingProcess handlingProcess = new InquiryHandlingProcess(inquiry);
-                handlingProcess.start();
+                Simulation simulation=new Simulation(inquiry);
+                simulation.start();
             }
         }
     }
