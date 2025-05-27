@@ -23,6 +23,7 @@ public class HandleClient implements Runnable {
     Socket clientSocket;
     ObjectInputStream inputStream = null;
     ObjectOutputStream outputStream=null;
+    private static final InquiryManager inquiryManager = new InquiryManager();
 
     public HandleClient(Socket clientSocket) {
         this.clientSocket = clientSocket;
@@ -104,7 +105,6 @@ public class HandleClient implements Runnable {
     public ResponseData addInquiry(List<Object> parameters) {
 
         Inquiry inquiry = (Inquiry) parameters.get(0);
-        InquiryManager inquiryManager=new InquiryManager();
         ResponseStatus status = ResponseStatus.FAIL;
         int result=-1;
         try {
@@ -123,7 +123,6 @@ public class HandleClient implements Runnable {
     public ResponseData getAllInquiryes(List<Object> parameters){
         System.out.println("getAllInquiryes");
         ResponseStatus status =ResponseStatus.SUCCESS;
-        InquiryManager inquiryManager=new InquiryManager();
         Object result=inquiryManager.getQueue();
         ResponseData responseData=new ResponseData(status,"getAllInquiryes from server",result);
         return responseData;
@@ -261,7 +260,6 @@ public class HandleClient implements Runnable {
         System.out.println("isRepresentativeActive");
 
         int code = (int) parameters.get(0);
-        InquiryManager inquiryManager=new InquiryManager();
         ResponseStatus status =ResponseStatus.FAIL;
         String message="isRepresentativeActive";
 
@@ -287,7 +285,6 @@ public class HandleClient implements Runnable {
        System.out.println("getAllInquiriesByRepresentative");
 
        int code = (int) parameters.get(0);
-       InquiryManager inquiryManager=new InquiryManager();
        ResponseStatus status =ResponseStatus.FAIL;
        String message="getAllInquiriesByRepresentative";
        List<Inquiry>  result=null;
