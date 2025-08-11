@@ -1,0 +1,9 @@
+className: Question
+folderName: Question
+code: 10
+creationDate: 2025-05-27T09:08:04.024440200
+description: שאלה על שירות 4
+documents: []
+status: ARCHIVED
+representativeId: 456
+representativeName: hgk

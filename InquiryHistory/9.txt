@@ -1,0 +1,9 @@
+className: Request
+folderName: Request
+code: 9
+creationDate: 2025-05-27T09:08:03.994449800
+description: בקשה לשדרוג 4
+documents: []
+status: ARCHIVED
+representativeId: 789
+representativeName: hyyyyy
