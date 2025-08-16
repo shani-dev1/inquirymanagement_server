@@ -1,6 +1,5 @@
 package Data;
 
-import Exceptions.InquiryException;
 import Exceptions.InquiryRunTimeException;
 import HandleStoreFiles.IForSaving;
 
@@ -10,38 +9,42 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public abstract class Inquiry implements IForSaving, Serializable{
+public abstract class Inquiry implements IForSaving, Serializable {
     private Integer code;
     private String description;
     private LocalDateTime creationDate;
-    private List <String> documents = new ArrayList<>();
+    private List<String> documents = new ArrayList<>();
     private String className;
     private InquiryStatus status;
     private Representative representative;
 
+    public Inquiry(Integer code, String description, LocalDateTime creationDate, List<String> documents, String className) {
+        this.code = code;
+        this.description = description;
+        this.creationDate = creationDate;
+        this.documents = documents;
+        this.className = className;
+        this.status = InquiryStatus.OPEN;
+    }
+
+    public Inquiry() {
+        this.creationDate = LocalDateTime.now();
+    }
+
     public Representative getRepresentative() {
         return representative;
     }
+
     public void setRepresentative(Representative representative) {
         this.representative = representative;
     }
+
     public InquiryStatus getStatus() {
         return status;
     }
+
     public void setStatus(InquiryStatus status) {
         this.status = status;
-    }
-
-    public Inquiry(Integer code, String description, LocalDateTime creationDate, List<String> documents, String className){
-        this.code=code;
-        this.description=description;
-        this.creationDate=creationDate;
-        this.documents=documents;
-        this.className=className;
-        status = InquiryStatus.OPEN;
-    }
-    public Inquiry() {
-        this.creationDate = LocalDateTime.now();
     }
 
     public void fillDataByUser() {
@@ -53,11 +56,10 @@ public abstract class Inquiry implements IForSaving, Serializable{
             throw new InquiryRunTimeException(this.code, "Description cannot be empty");
         }
 
-        String input;
         System.out.println("Enter documents (type '0' to finish):");
         while (true) {
-            input = scanner.nextLine();
-            if (input.equalsIgnoreCase("0")) {
+            String input = scanner.nextLine();
+            if ("0".equalsIgnoreCase(input)) {
                 break;
             }
             documents.add(input);
@@ -83,7 +85,6 @@ public abstract class Inquiry implements IForSaving, Serializable{
         sb.append("documents: ").append(getDocuments().toString()).append("\n");
         sb.append("status: ").append(getStatus()).append("\n");
 
-        // חשוב - שמירת נתוני נציג
         if (representative != null) {
             sb.append("representativeId: ").append(representative.getId()).append("\n");
             sb.append("representativeName: ").append(representative.getName()).append("\n");
@@ -95,15 +96,12 @@ public abstract class Inquiry implements IForSaving, Serializable{
         return sb.toString();
     }
 
-
     public void parseFromFile(List<String> values) {
         this.className = values.get(0).trim();
         this.code = Integer.parseInt(values.get(1).trim());
         this.description = values.get(2).trim();
         this.creationDate = LocalDateTime.parse(values.get(3).trim());
-        //this.files = values.size() > 4 && !values.get(4).trim().isEmpty() ? Arrays.asList(values.get(4).trim().split(" ,")) : new ArrayList<>();
-
-
+        // Parsing documents can be added here if needed
     }
 
     public abstract void handling();
@@ -159,4 +157,3 @@ public abstract class Inquiry implements IForSaving, Serializable{
                 '}';
     }
 }
-

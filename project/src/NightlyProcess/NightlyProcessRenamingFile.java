@@ -1,11 +1,16 @@
 package NightlyProcess;
-import HandleStoreFiles.IForSaving;
 
-import java.io.*;
+import java.io.File;
 
-public class NightlyProcessRenamingFile extends Thread{
+public class NightlyProcessRenamingFile extends Thread {
     private String path;
     private String text;
+
+    public NightlyProcessRenamingFile(String path, String text) {
+        this.path = path;
+        this.text = text;
+    }
+
     public String getPath() {
         return path;
     }
@@ -22,28 +27,27 @@ public class NightlyProcessRenamingFile extends Thread{
         this.text = text;
     }
 
-    public NightlyProcessRenamingFile(String path, String text) {
-        this.path = path;
-        this.text = text;
-    }
-
     @Override
     public void run() {
         File folder = new File(path);
         if (!folder.exists() || !folder.isDirectory()) {
-            System.out.println("error to find the Directory ");
+            System.out.println("Error: Directory not found.");
             return;
         }
+
         File[] files = folder.listFiles();
-        if (files == null) return;
-        for(File file:files) {
+        if (files == null) {
+            return;
+        }
+
+        for (File file : files) {
             if (file.isFile()) {
-                File newFile = new File(path + "\\" + text + file.getName());
-                boolean changeName = file.renameTo(newFile);
-                if (changeName) {
-                    System.out.println("renamed to " + newFile.getName());
+                File newFile = new File(path + File.separator + text + file.getName());
+                boolean renamed = file.renameTo(newFile);
+                if (renamed) {
+                    System.out.println("Renamed to: " + newFile.getName());
                 } else {
-                    System.out.println("error to rename: " + file.getName());
+                    System.out.println("Error renaming file: " + file.getName());
                 }
             }
         }

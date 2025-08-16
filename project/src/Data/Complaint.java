@@ -8,24 +8,25 @@ import java.util.Scanner;
 public class Complaint extends Inquiry implements Serializable {
     private String assignedBranch;
 
-    public String getAssignedBranch() {
-        return assignedBranch;
-    }
-
-    private void setAssignedBranch(String s) {
-        assignedBranch=s;
-    }
     public Complaint(Integer code, String description, LocalDateTime creationDate, List<String> documents, String className, String assignedBranch) {
         super(code, description, creationDate, documents, className);
         this.assignedBranch = assignedBranch;
     }
 
-
     public Complaint(String assignedBranch) {
         this.assignedBranch = assignedBranch;
     }
 
-    public Complaint(){}
+    public Complaint() {
+    }
+
+    public String getAssignedBranch() {
+        return assignedBranch;
+    }
+
+    private void setAssignedBranch(String assignedBranch) {
+        this.assignedBranch = assignedBranch;
+    }
 
     @Override
     public void fillDataByUser() {
@@ -37,7 +38,7 @@ public class Complaint extends Inquiry implements Serializable {
 
     @Override
     public String getData() {
-        return super.getData() + "\n assignedBranch: " + (assignedBranch != null ? assignedBranch : "");
+        return super.getData() + "\nassignedBranch: " + (assignedBranch != null ? assignedBranch : "");
     }
 
     @Override
@@ -63,4 +64,3 @@ public class Complaint extends Inquiry implements Serializable {
         return "Complaint";
     }
 }
-

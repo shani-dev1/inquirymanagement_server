@@ -1,9 +1,6 @@
 package Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Representative implements Serializable {
     private int code;
@@ -15,8 +12,28 @@ public class Representative implements Serializable {
         return representativeNextCodeVal;
     }
 
-    public static void setRepresentativeNextCodeVal(int representativeNextCodeVal) {
-        Representative.representativeNextCodeVal = representativeNextCodeVal;
+    public static void setRepresentativeNextCodeVal(int value) {
+        representativeNextCodeVal = value;
+    }
+
+    public Representative(Integer id, String name) {
+        this.code = representativeNextCodeVal++;
+        this.id = id;
+        this.name = name;
+    }
+
+    public Representative() {}
+
+    public int getCode() {
+        return code;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setCode(int code) {
@@ -31,26 +48,6 @@ public class Representative implements Serializable {
         this.name = name;
     }
 
-    public Representative(Integer id, String name) {
-        code=representativeNextCodeVal++;
-        this.name = name;
-        this.id = id;
-    }
-
-    public Representative() {
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getId() {
-        return id;
-    }
     @Override
     public String toString() {
         return "Representative{" +
