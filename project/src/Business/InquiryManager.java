@@ -3,6 +3,7 @@ package Business;
 import Data.*;
 import Exceptions.InquiryRunTimeException;
 import HandleStoreFiles.HandleFiles;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -18,8 +19,8 @@ public class InquiryManager {
     private static Integer nextCodeVal = 0;
     private boolean flag = true;
 
-    public  static Queue<Representative> representativeList = new LinkedList<>();
-    public  static Map<Inquiry, Representative> activeInquiriesMap = new HashMap<>();
+    public static Queue<Representative> representativeList = new LinkedList<>();
+    public static Map<Inquiry, Representative> activeInquiriesMap = new HashMap<>();
 
     public static Queue<Inquiry> getQueue() {
         return queue;
@@ -57,7 +58,6 @@ public class InquiryManager {
         nextCodeVal++;
         queue.add(inquiry);
     }
-
 
     private static void loadRepresentativesFromFiles() {
         String directoryPath = "Representative";
@@ -100,9 +100,8 @@ public class InquiryManager {
                 try {
                     queue.add(currentInquiry);
                 } catch (InquiryRunTimeException exception) {
-                    throw new InquiryRunTimeException(--nextCodeVal, "שגיאה בשמירת הפניה " + exception.getMessage());
+                    throw new InquiryRunTimeException(--nextCodeVal, "Error saving inquiry " + exception.getMessage());
                 }
-
                 handleFiles.saveFile(currentInquiry);
             } else {
                 flag = false;
@@ -159,7 +158,7 @@ public class InquiryManager {
         InquiryManager.representativeList = representativeList;
     }
 
-    public int addInquiryFromClient(Inquiry inquiry)  throws IOException {
+    public int addInquiryFromClient(Inquiry inquiry) throws IOException {
         inquiry.setCode(nextCodeVal);
         inquiry.setStatus(InquiryStatus.OPEN);
         queue.add(inquiry);
@@ -177,6 +176,7 @@ public class InquiryManager {
         }
         return false;
     }
+
     public List<Inquiry> getAllInquiriesByRepresentative(int code) {
         List<Inquiry> result = new ArrayList<>();
         HandleFiles handleFiles = new HandleFiles();
@@ -206,5 +206,4 @@ public class InquiryManager {
 
         return result;
     }
-
 }

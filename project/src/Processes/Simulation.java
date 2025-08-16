@@ -2,8 +2,8 @@ package Processes;
 
 import Data.Inquiry;
 
-public class Simulation extends Thread{
-    Inquiry inquiry;
+public class Simulation extends Thread {
+    private final Inquiry inquiry;
 
     public Simulation(Inquiry inquiry) {
         this.inquiry = inquiry;
@@ -13,7 +13,5 @@ public class Simulation extends Thread{
     public void run() {
         InquiryHandlingProcess handlingProcess = new InquiryHandlingProcess(inquiry);
         handlingProcess.start();
-
     }
-
 }

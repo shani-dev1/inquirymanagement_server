@@ -1,4 +1,5 @@
 package Business;
+
 import Data.*;
 import HandleStoreFiles.HandleFiles;
 
@@ -13,7 +14,7 @@ import static Data.InquiryStatus.ARCHIVED;
 
 public class InquiryHandling extends Thread {
     private static Inquiry currentInquiry;
-
+    private static final HandleFiles handleFiles = new HandleFiles();
 
     public Inquiry getCurrentInquiry() {
         return currentInquiry;
@@ -22,8 +23,6 @@ public class InquiryHandling extends Thread {
     public void setCurrentInquiry(Inquiry currentInquiry) {
         this.currentInquiry = currentInquiry;
     }
-
-    private static final HandleFiles handleFiles = new HandleFiles();
 
     public void createInquiry() {
         Scanner scanner = new Scanner(System.in);
@@ -55,7 +54,7 @@ public class InquiryHandling extends Thread {
 
     public static void handleInquiry(Inquiry inquiry) {
         Random rand = new Random();
-        int estimationTime = determineEstimationTime(rand,inquiry);
+        int estimationTime = determineEstimationTime(rand, inquiry);
         try {
             Thread.sleep(estimationTime * 1000);
             inquiry.handling();
@@ -64,9 +63,7 @@ public class InquiryHandling extends Thread {
         }
     }
 
-
-
-    public static int determineEstimationTime(Random rand,Inquiry inquiry) {
+    public static int determineEstimationTime(Random rand, Inquiry inquiry) {
         if (inquiry instanceof Question) {
             return rand.nextInt(5) + 1;
         } else if (inquiry instanceof Complaint) {
@@ -78,20 +75,14 @@ public class InquiryHandling extends Thread {
     }
 
     public static void moveInquiryToHistory(Inquiry inquiry) throws IOException {
-      //יוצר או פותח תקיית היסטוריה
         File historyDir = new File("InquiryHistory");
         if (!historyDir.exists()) {
             historyDir.mkdir();
         }
-        System.out.println(historyDir.isDirectory());
-        // שומר את האובייקט לתיקיית ההיסטוריה
-        handleFiles.saveFile(inquiry,historyDir.getPath());
-        // מוחק את הפניה מהתקיה המקורית
-
-       handleFiles.deleteFile(inquiry);
-        System.out.println("Inquiry deleted : " + inquiry.getFileName()+".txt");
-
-        System.out.println("Inquiry moved to history: " + inquiry.getFileName()+".txt");
+        handleFiles.saveFile(inquiry, historyDir.getPath());
+        handleFiles.deleteFile(inquiry);
+        System.out.println("Inquiry deleted: " + inquiry.getFileName() + ".txt");
+        System.out.println("Inquiry moved to history: " + inquiry.getFileName() + ".txt");
     }
 
     public static void updateStatusInFile(Inquiry inquiry, InquiryStatus newStatus) {
@@ -110,25 +101,21 @@ public class InquiryHandling extends Thread {
             existingInquiry.setStatus(newStatus);
             handleFiles.saveFile(existingInquiry);
             System.out.println("Status updated successfully in file: " + file.getPath());
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void cancelInquiry(int code){
-        Inquiry inquiry=getInquiryByCode(code);
-
-        if(inquiry != null)
-        {
-           if(inquiry.getStatus()==InquiryStatus.IN_PROGRESS)
-           {
-               activeInquiriesMap.remove(inquiry);
-               Representative rep = activeInquiriesMap.get(inquiry);
-               representativeList.add(rep);
-           }
-           inquiry.setStatus(InquiryStatus.CANCELLED);
-           handleFiles.saveFile(inquiry);
+    public void cancelInquiry(int code) {
+        Inquiry inquiry = getInquiryByCode(code);
+        if (inquiry != null) {
+            if (inquiry.getStatus() == InquiryStatus.IN_PROGRESS) {
+                activeInquiriesMap.remove(inquiry);
+                Representative rep = activeInquiriesMap.get(inquiry);
+                representativeList.add(rep);
+            }
+            inquiry.setStatus(InquiryStatus.CANCELLED);
+            handleFiles.saveFile(inquiry);
             try {
                 moveInquiryToHistory(inquiry);
             } catch (IOException e) {
@@ -138,8 +125,7 @@ public class InquiryHandling extends Thread {
         System.out.println("code");
     }
 
-    public static Inquiry getInquiryByCode(int code){
-
+    public static Inquiry getInquiryByCode(int code) {
         for (Inquiry inquiry : InquiryManager.activeInquiriesMap.keySet()) {
             if (inquiry.getCode() == code) {
                 return inquiry;
@@ -147,7 +133,7 @@ public class InquiryHandling extends Thread {
         }
         String currentDirectory = System.getProperty("user.dir");
         Path directoryPath = Paths.get(currentDirectory);
-        List<String> subDirectories = Arrays.asList("Question", "Request", "Complaint" , "InquiryHistory");
+        List<String> subDirectories = Arrays.asList("Question", "Request", "Complaint", "InquiryHistory");
 
         for (String subDir : subDirectories) {
             Path subDirectoryPath = directoryPath.resolve(subDir);
@@ -155,18 +141,20 @@ public class InquiryHandling extends Thread {
             if (files != null) {
                 for (File file : files) {
                     Inquiry inquiry = (Inquiry) handleFiles.readTxt(file);
-                    if(inquiry.getCode()==code)
+                    if (inquiry.getCode() == code) {
                         return inquiry;
+                    }
                 }
             }
         }
-        return null ;
+        return null;
     }
 
-    public InquiryStatus getInquiryStatusByCode(int code){
+    public InquiryStatus getInquiryStatusByCode(int code) {
         Inquiry inquiry = getInquiryByCode(code);
         return inquiry.getStatus();
     }
+
     public static String getRepresentativeNameByInquiryCode(int code) {
         Inquiry inquiry = getInquiryByCode(code);
         if (inquiry != null && inquiry.getRepresentative() != null) {
@@ -175,4 +163,3 @@ public class InquiryHandling extends Thread {
         return null;
     }
 }
-

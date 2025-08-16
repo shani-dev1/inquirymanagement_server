@@ -7,39 +7,39 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class InquiryManagerServer {
-    ServerSocket myServer;
-    boolean isRunning;
-    public InquiryManagerServer( int port) {
+    private ServerSocket myServer;
+    private boolean isRunning;
+
+    public InquiryManagerServer(int port) {
         try {
             myServer = new ServerSocket(port);
             System.out.println("Server initialized on port " + port);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        InquiryManager InquiryManager=new InquiryManager();
+        InquiryManager inquiryManager = new InquiryManager();
     }
 
     public void start() {
         isRunning = true;
         System.out.println("Server is waiting for clients...");
 
-            new Thread(() -> {
-        while (isRunning) {
-            try {
-                Socket clientSocket = myServer.accept();
-                System.out.println("Client connected: " + clientSocket.getInetAddress());
+        new Thread(() -> {
+            while (isRunning) {
+                try {
+                    Socket clientSocket = myServer.accept();
+                    System.out.println("Client connected: " + clientSocket.getInetAddress());
 
-                HandleClient handleClient = new HandleClient(clientSocket);
-                Thread clientThread = new Thread(handleClient);
-                clientThread.start();
-
-            } catch (IOException e) {
-                if (isRunning) {
-                    e.printStackTrace();
+                    HandleClient handleClient = new HandleClient(clientSocket);
+                    Thread clientThread = new Thread(handleClient);
+                    clientThread.start();
+                } catch (IOException e) {
+                    if (isRunning) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        }
-    }).start();
+        }).start();
     }
 
     public void stop() {

@@ -6,18 +6,18 @@ import java.util.List;
 
 public class Request extends Inquiry implements Serializable {
 
-    public Request(Integer code, String description, LocalDateTime creationDate, List<String> documents, String className){
-       super(code,description,creationDate,documents,className);
+    public Request(Integer code, String description, LocalDateTime creationDate, List<String> documents, String className) {
+        super(code, description, creationDate, documents, className);
     }
 
-    public Request(){}
+    public Request() {}
 
     @Override
     public void handling() {
         int estimatedTime = getEstimatedTime();
-        System.out.println("Handling Request with code " + this.getCode() + ". Estimated time: " + estimatedTime + " seconds.");
+        System.out.println("Handling Request with code " + getCode() + ". Estimated time: " + estimatedTime + " seconds.");
         try {
-            Thread.sleep(estimatedTime * 1000);
+            Thread.sleep(estimatedTime * 1000L);
             if (estimatedTime > 5 && Thread.activeCount() > 10) {
                 Thread.yield();
             }
